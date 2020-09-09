@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="27f6c4a0-5c60-4911-aec2-78c0f210537a" activeEnvironment="Default" name="ws-project" soapui-version="5.5.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="1af84b97-9f86-4df0-af79-a5ced8dba00d" wsaVersion="NONE" name="CalculadoraServiceImpServiceSoapBinding" type="wsdl" bindingName="{http://service.webservice.creativitystack.com/}CalculadoraServiceImpServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/web_war_wsproject/CalculadoraServiceImp?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/web_war_wsproject/CalculadoraServiceImp?wsdl"><con:part><con:url>http://localhost:8080/web_war_wsproject/CalculadoraServiceImp?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="CalculadoraServiceImpService" targetNamespace="http://service.webservice.creativitystack.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.webservice.creativitystack.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://ws-project/calculator">
+  <wsdl:import location="http://localhost:8080/web_war_wsproject/CalculadoraServiceImp?wsdl=CalculadoraService.wsdl" namespace="http://ws-project/calculator"></wsdl:import>
+  <wsdl:binding name="CalculadoraServiceImpServiceSoapBinding" type="ns1:CalculadoraService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="addition">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="addition">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="additionResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sayHello">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="sayHello">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="sayHelloResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CalculadoraServiceImpService">
+    <wsdl:port binding="tns:CalculadoraServiceImpServiceSoapBinding" name="calculadoraPort">
+      <soap:address location="http://localhost:8080/web_war_wsproject/CalculadoraServiceImp"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/web_war_wsproject/CalculadoraServiceImp?wsdl=CalculadoraService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="CalculadoraService" targetNamespace="http://ws-project/calculator" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://ws-project/calculator">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://ws-project/calculator" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ws-project/calculator">
+      <xs:element name="addition" type="tns:addition"/>
+      <xs:element name="additionResponse" type="tns:additionResponse"/>
+      <xs:element name="sayHello" type="tns:sayHello"/>
+      <xs:element name="sayHelloResponse" type="tns:sayHelloResponse"/>
+      <xs:complexType name="addition">
+        <xs:sequence>
+          <xs:element name="arg0" type="xs:int"/>
+          <xs:element name="arg1" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="additionResponse">
+        <xs:sequence>
+          <xs:element name="return" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="sayHello">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="sayHelloResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="additionResponse">
+    <wsdl:part element="ns1:additionResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sayHello">
+    <wsdl:part element="ns1:sayHello" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addition">
+    <wsdl:part element="ns1:addition" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sayHelloResponse">
+    <wsdl:part element="ns1:sayHelloResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CalculadoraService">
+    <wsdl:operation name="addition">
+      <wsdl:input message="ns1:addition" name="addition"></wsdl:input>
+      <wsdl:output message="ns1:additionResponse" name="additionResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sayHello">
+      <wsdl:input message="ns1:sayHello" name="sayHello"></wsdl:input>
+      <wsdl:output message="ns1:sayHelloResponse" name="sayHelloResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/web_war_wsproject/CalculadoraServiceImp</con:endpoint></con:endpoints><con:operation id="ddd96595-e8db-4a3d-8068-7beba8c542ed" isOneWay="false" action="" name="addition" bindingOperationName="addition" type="Request-Response" outputName="additionResponse" inputName="addition" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="22e28536-a549-45fb-8e67-b8e68d2b6ba5" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/web_war_wsproject/CalculadoraServiceImp</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cal="http://ws-project/calculator">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <cal:addition>\r
+         <arg0>15</arg0>\r
+         <arg1>20</arg1>\r
+      </cal:addition>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.webservice.creativitystack.com/CalculadoraService/addition"/><con:wsrmConfig version="1.2"/></con:call><con:call id="37001c14-6a87-4ad9-bec2-42784db8f615" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/web_war_wsproject/CalculadoraServiceImp</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cal="http://ws-project/calculator">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <cal:addition>\r
+         <arg0>?</arg0>\r
+         <arg1>?</arg1>\r
+      </cal:addition>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.webservice.creativitystack.com/CalculadoraService/addition"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="60053af0-64b4-4643-bbcb-dd19c0828f1b" isOneWay="false" action="" name="sayHello" bindingOperationName="sayHello" type="Request-Response" outputName="sayHelloResponse" inputName="sayHello" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="cb88e8c9-050c-4502-9381-98d64ea10911" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/web_war_wsproject/CalculadoraServiceImp</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cal="http://ws-project/calculator">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <cal:sayHello>\r
+         <!--Optional:-->\r
+         <arg0>hansel</arg0>\r
+      </cal:sayHello>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://service.webservice.creativitystack.com/CalculadoraService/sayHello"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>
