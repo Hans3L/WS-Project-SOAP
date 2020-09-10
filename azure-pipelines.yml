@@ -45,6 +45,10 @@ jobs:
       ls -l
       echo Donde se encuentra actualmente
       pwd
+      echo Copiando artefacto a 
+      copy /home/vsts/work/1/s/target/*.war /var/lib/docker/tmp/docker-builder782823464/target/
+      echo Listando
+      ls /var/lib/docker/tmp/docker-builder782823464/target/
   - task: Docker@2
     displayName: 'Logueado a Container Registry Docker'
     inputs:
@@ -52,6 +56,12 @@ jobs:
       containerRegistry: serviceDockerHub
   - script: |
       echo Se logueo correctamente
+      echo Listar raiz
+      ls /
+      echo Listar posición actual
+      ls -s
+      echo Donde nos encontramos
+      pwd
   - task: Docker@2
     displayName: 'Compilar el DockerFile y empuja a Docker Hub'
     inputs:
