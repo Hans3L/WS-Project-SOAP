@@ -25,7 +25,7 @@ jobs:
   displayName: Comienzo de la compilación
 
   pool:
-    name: 'Azure Pipeline Hansel' 
+    name: 'Azure Pipeline' 
     vmImage: 'ubuntu-latest'
 
   steps:
