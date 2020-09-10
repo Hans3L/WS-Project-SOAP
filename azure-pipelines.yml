@@ -37,7 +37,7 @@ jobs:
       mavenPomFile: 'pom.xml'
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '1.8'
-      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      #testResultsFiles: '**/surefire-reports/TEST-*.xml'
       goals: 'package'
   - script: |
       echo Finalizo la compilacion de Maven.
@@ -54,7 +54,7 @@ jobs:
     displayName: Compila y empuja una imagen al container registry Docker Hub
     inputs:
       command: buildAndPush
-      repository: $(imageRepository)
+      #repository: $(imageRepository)
       dockerfile: $(dockerfilePath)
       containerRegistry: $(dockerRegistryServiceConnection)
       #tags: |
