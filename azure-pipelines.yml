@@ -12,11 +12,11 @@ resources:
 variables:
   # Conexión del servicio de registro de contenedores establecida durante la creación de la canalización
   #dockerRegistryServiceConnection: '{{ containerRegistryConnection.Id }}'
-  dockerRegistryServiceConnection: Service Docker Hub
+  dockerRegistryServiceConnection: serviceDockerHub
   #imageRepository: '{{#toAlphaNumericString imageRepository 50}}{{/toAlphaNumericString}}'
   imagenRepository: 'ws-project'
   #containerRegistry: '{{ containerRegistryConnection.Authorization.Parameters.loginServer }}'
-  containerRegistry: Service Docker Hub
+  containerRegistry: serviceDockerHub
   #dockerfilePath: '{{ dockerfilePath }}'
   dockerfilePath: '**/Dockerfile'
   #tag: '$(Build.BuildId)'
@@ -24,7 +24,7 @@ variables:
 
 jobs:
 
-- job: CreateResource
+- job: CreateImageCompilePom
   displayName: Comienzo de la compilación
 
   pool:
@@ -41,23 +41,18 @@ jobs:
       goals: 'package'
   - script: |
       echo Finalizo la compilacion de Maven.
-
-- job: BuildImage
-  displayName: Compilar
-  #condition: or(succeeded(), ne(variables['Azure.CreateResources'], 'true'))
-
-  pool:
-    vmImage: 'ubuntu-latest'
-
-  steps:
   - task: Docker@2
-    displayName: Compila y empuja una imagen al container registry Docker Hub
+    displayName: 'Logueado a Container Registry Docker'
+    inputs:
+      command: login
+      containerRegistry: serviceDockerHub
+  - script: |
+      echo Se logueo correctamente
+  - task: Docker@2
+    displayName: 'Compilar el DockerFile y empuja a Docker Hub'
     inputs:
       command: buildAndPush
-      #repository: $(imageRepository)
       dockerfile: $(dockerfilePath)
-      containerRegistry: $(dockerRegistryServiceConnection)
-      #tags: |
-      #  $(tag)
+      arguments:  --build-arg artifact_id=ws-project --build-arg artifact_version=1.1 -t ws-project:1.1
   - script: |
-      echo Finalizo la compilación y empuje a Docker Hub
+      echo Finalizo el empuje a Docker Hub
