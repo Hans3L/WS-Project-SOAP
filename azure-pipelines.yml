@@ -6,6 +6,9 @@
 trigger:
 - master
 
+resources:
+- repo: self
+
 variables:
   # Conexión del servicio de registro de contenedores establecida durante la creación de la canalización
   #dockerRegistryServiceConnection: '{{ containerRegistryConnection.Id }}'
@@ -21,11 +24,11 @@ variables:
 
 jobs:
 
-- job: CreateResources
+- job: CreateResource
   displayName: Comienzo de la compilación
 
   pool:
-    name: 'Azure Pipeline' 
+    name: 'Azure Pipeline Hansel' 
     vmImage: 'ubuntu-latest'
 
   steps:
