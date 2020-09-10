@@ -1,0 +1,61 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+variables:
+  # Conexión del servicio de registro de contenedores establecida durante la creación de la canalización
+  #dockerRegistryServiceConnection: '{{ containerRegistryConnection.Id }}'
+  dockerRegistryServiceConnection: Service Docker Hub
+  #imageRepository: '{{#toAlphaNumericString imageRepository 50}}{{/toAlphaNumericString}}'
+  imagenRepository: 'ws-project'
+  #containerRegistry: '{{ containerRegistryConnection.Authorization.Parameters.loginServer }}'
+  containerRegistry: Service Docker Hub
+  #dockerfilePath: '{{ dockerfilePath }}'
+  dockerfilePath: '**/Dockerfile'
+  #tag: '$(Build.BuildId)'
+  #tag: 
+
+jobs:
+
+- job: CreateResources
+  displayName: Comienzo de la compilación
+
+  pool:
+    name: 'Azure Pipeline Hansel' 
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - task: Maven@3
+    displayName: 'Compilacion con Maven al pom'
+    inputs:
+      mavenPomFile: 'pom.xml'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      goals: 'package'
+  - script: |
+      echo Finalizo la compilacion de Maven.
+
+- job: BuildImage
+  displayName: Compilar
+  #condition: or(succeeded(), ne(variables['Azure.CreateResources'], 'true'))
+
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - task: Docker@2
+    displayName: Compila y empuja una imagen al container registry Docker Hub
+    inputs:
+      command: buildAndPush
+      repository: $(imageRepository)
+      dockerfile: $(dockerfilePath)
+      containerRegistry: $(dockerRegistryServiceConnection)
+      #tags: |
+      #  $(tag)
+  - script: |
+      echo Finalizo la compilación y empuje a Docker Hub
