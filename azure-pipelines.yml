@@ -48,9 +48,8 @@ jobs:
       echo Donde se encuentra actualmente
       pwd
       echo Copiando artefacto a 
-      cp  /home/vsts/work/1/s/target/*.war /var/lib/docker/tmp/docker-builder782823464/target/
-      echo Listando
-      sudo ls /var/lib/docker/tmp/docker-builder782823464/target/
+      sudo cp  /home/vsts/work/1/s/target/*.war /var/lib/docker/tmp/docker-builder782823464/target/
+      
   - task: Docker@2
     displayName: 'Logueado a Container Registry Docker'
     inputs:
