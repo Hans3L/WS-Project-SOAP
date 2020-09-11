@@ -21,11 +21,17 @@ variables:
   dockerfilePath: '**/Dockerfile'
   #tag: '$(Build.BuildId)'
   #tag: 
+  #nameSpaceContainerRegistry: '{{nameSpaceContainerRegistry}}'
+  #artifact_id: '{{artifact_id}}'
+  #artifact_version: '{{artifact_version}}'
+  nameSpaceContainerRegistry: h4ns3l
+  artifact_id: 'ws-project'
+  artifact_version: '1.1'
 
 jobs:
 
 - job: CreateImageCompilePom
-  displayName: Comienzo de la compilación
+  displayName: Comienzo del jobs
 
   pool:
     vmImage: 'ubuntu-latest'
@@ -36,8 +42,12 @@ jobs:
     inputs:
       mavenPomFile: 'pom.xml'
       javaHomeOption: 'JDKVersion'
+      mavenOpts: -Xmx1024m
       jdkVersionOption: '1.8'
+      mavenSetM2Home: false
+      pmdAnalysisEnabled: false
       #testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      findbugsAnalysisEnabled: false
       goals: 'package'
   - script: |
       echo Finalizo la compilacion de Maven.
@@ -55,7 +65,29 @@ jobs:
       sudo cp -f /home/vsts/work/1/s/target/ws-project-1.1.war /home/vsts/work/1/s/
       
   - task: Docker@2
+    displayName: 'Compilar el DockerFile'
+    condition: 'succeeded()'
+    inputs:
+      command: build
+      dockerfile: $(dockerfilePath)
+      buildContext: '**'
+      arguments:  --build-arg artifact_id=ws-project --build-arg artifact_version=1.1
+      tags: 1.1
+  - script: |
+      echo Finaliza la compilación
+  - task: Docker@1
+    displayName: 'Tageo de imagen creada por Dockerfile'
+    condition: 'succeeded()'
+    inputs:
+      command: Tag image
+      arguments: $(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)
+      imageName: $(artifact_id):$(artifact_version)
+      pushMultipleImages: false
+      tagMultipleImages: false
+
+  - task: Docker@2
     displayName: 'Logueado a Container Registry Docker'
+    condition: 'succeeded()'
     inputs:
       command: login
       containerRegistry: serviceDockerHub
@@ -66,11 +98,19 @@ jobs:
       echo Donde nos encontramos
       pwd
   - task: Docker@2
-    displayName: 'Compilar el DockerFile y empuja a Docker Hub'
+    displayName: 'Empuje imagen tageada a Docker Registry'
+    condition: 'succeeded()'
     inputs:
-      command: buildAndPush
-      dockerfile: $(dockerfilePath)
-      arguments:  --build-arg artifact_id=ws-project --build-arg artifact_version=1.1
-      tags: 1.1
+      containerRegistry: serviceDockerHub
+      repository: '$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
+      command: push
+      #Dockerfile: '**/Dockerfile'
+      #buildContext: '**'
+      tags: ''
+      arguments: ''
   - script: |
-      echo Finalizo el empuje a Docker Hub
+      echo Se logueo correctamente
+      echo Listar posición actual
+      ls -s
+      echo Donde nos encontramos
+      pwd
