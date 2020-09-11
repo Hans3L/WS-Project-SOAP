@@ -56,15 +56,18 @@ jobs:
     displayName: 'Compilar el DockerFile'
     condition: 'succeeded()'
     inputs:
+      containerRegistry: serviceDockerHub
+      repository: ''
       command: build
       dockerfile: $(dockerfilePath)
       buildContext: '**'
-      arguments:  --build-arg artifact_id=ws-project --build-arg artifact_version=1.1
-      tags: 1.1
+      tags: ''
+      arguments:  --build-arg artifact_id=$(artifact_id) --build-arg artifact_version=$(artifact_version) -t $(artifact_id):$(artifact_version)
+      addPipelineData: true
   - script: |
       echo Finaliza la compilación
       docker images
-      
+
   - task: Docker@1
     displayName: 'Tageo de imagen creada por Dockerfile'
     condition: 'succeeded()'
