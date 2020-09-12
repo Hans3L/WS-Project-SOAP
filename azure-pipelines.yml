@@ -12,14 +12,15 @@ resources:
 
 variables:
 ##################################################################
-  containerRegistry: '{{ containerRegistry }}'
-  imageRepository: '{{ imageRepository }}'
-  dockerfilePath: '{{ dockerfilePath }}'
-  nameSpaceContainerRegistry: '{{ nameSpaceContainerRegistry }}'
-  artifact_id: '{{ artifact_id }}'
-  artifact_version: '{{ artifact_version }}'
-  containerName: '{{ containerName }}'
-  ArtifactName: '{{ drop }}'
+  # containerRegistry: '{{ containerRegistry }}'
+  # imageRepository: '{{ imageRepository }}'
+  # dockerfilePath: '{{ dockerfilePath }}'
+  # nameSpaceContainerRegistry: '{{ nameSpaceContainerRegistry }}'
+  # artifact_id: '{{ artifact_id }}'
+  # artifact_version: '{{ artifact_version }}'
+  # containerName: '{{ containerName }}'
+  # ArtifactName: '{{ drop }}'
+  tag: ''
 #################################################################
 jobs:
 
