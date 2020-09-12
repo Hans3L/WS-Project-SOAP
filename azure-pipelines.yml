@@ -80,7 +80,7 @@ jobs:
       containerRegistry: $(containerRegistry)
       command: login
   - script: |
-      docker login -u $(iamapikey) --password-stdin $(apiKeyCR)
+      echo docker login -u $(iamapikey) --password-stdin $(apiKeyCR)
       echo Logeo a Bluemix Registry Completo...
       
   - task: Docker@2
