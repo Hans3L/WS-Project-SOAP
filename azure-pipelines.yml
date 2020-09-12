@@ -21,6 +21,7 @@ variables:
   # containerName: '{{ containerName }}'
   # ArtifactName: '{{ drop }}'
   # domainCR: '{{ domainCR }}'
+  # apiKeyCR: '{{ apiKeyCR }}'
   tag: ''
 #################################################################
 jobs:
@@ -89,7 +90,7 @@ jobs:
       #buildContext: '**'
       addPipelineData: true
       tags: ''
-      arguments: ''
+      arguments: 'login -u $(apiKeyCR)'
   
   - task: Docker@1
     displayName: 'Correr contenedor'
