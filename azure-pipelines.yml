@@ -67,6 +67,8 @@ jobs:
       imageName: $(artifact_id):$(artifact_version)
       pushMultipleImages: false
       tagMultipleImages: false
+  - script: |
+      docker images
 
   - task: Docker@2
     displayName: 'Logueado a Container Registry Docker'
