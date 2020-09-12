@@ -105,7 +105,7 @@ jobs:
       dockerRegistryEndpoint: $(containerRegistry)
       command: 'Run an image'
       dockerFile: '$(dockerfilePath)'
-      arguments: '-p 8080:8080 -p 9990:9990 -it $(artifact_id):$(artifact_version) /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0'
+      arguments: '--name $(containerName) -p 8080:8080 -p 9990:9990 -it $(artifact_id):$(artifact_version) /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0'
       pushMultipleImages: false
       tagMultipleImages: false
       imageName: '$(artifact_id):$(artifact_version)'
