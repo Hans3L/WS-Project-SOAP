@@ -12,7 +12,7 @@ resources:
 
 variables:
 ##################################################################
-  containerRegistry: '{{ containerRegistryConnection.Id }}'
+  containerRegistry: '{{ containerRegistry }}'
   imageRepository: '{{ imageRepository }}'
   dockerfilePath: '{{ dockerfilePath }}'
   nameSpaceContainerRegistry: '{{ nameSpaceContainerRegistry }}'
