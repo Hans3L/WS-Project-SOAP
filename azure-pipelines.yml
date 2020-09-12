@@ -1,4 +1,5 @@
 # Starter pipeline
+# Author H4ns3L
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -20,13 +21,16 @@ variables:
   #dockerfilePath: '{{ dockerfilePath }}'
   dockerfilePath: '**/Dockerfile'
   #tag: '$(Build.BuildId)'
-  #tag: 
   #nameSpaceContainerRegistry: '{{nameSpaceContainerRegistry}}'
   #artifact_id: '{{artifact_id}}'
   #artifact_version: '{{artifact_version}}'
   nameSpaceContainerRegistry: h4ns3l
   artifact_id: 'ws-project'
   artifact_version: '1.1'
+  containerName: 'container-ws-project'
+  ArtifactName: 'drop'
+  build.artifactstagingdirectory: '/home/vsts/work/1/a'
+  system.defaultworkingdirectory: '/home/vsts/work/1/s'
 
 jobs:
 
@@ -49,14 +53,12 @@ jobs:
       #testResultsFiles: '**/surefire-reports/TEST-*.xml'
       findbugsAnalysisEnabled: false
       goals: 'package'
-  - script: |
-      echo Finalizo la compilacion de Maven.
 
   - task: Docker@2
     displayName: 'Compilar el DockerFile'
     condition: 'succeeded()'
     inputs:
-      containerRegistry: serviceDockerHub
+      containerRegistry: $(containerRegistry)
       repository: ''
       command: build
       dockerfile: $(dockerfilePath)
@@ -64,16 +66,13 @@ jobs:
       tags: ''
       arguments:  --build-arg artifact_id=$(artifact_id) --build-arg artifact_version=$(artifact_version) -t $(artifact_id):$(artifact_version)
       addPipelineData: true
-  - script: |
-      echo Finaliza la compilación
-      docker images
 
   - task: Docker@1
     displayName: 'Tageo de imagen creada por Dockerfile'
     condition: 'succeeded()'
     inputs:
       command: Tag image
-      dockerRegistryEndpoint: serviceDockerHub
+      dockerRegistryEndpoint: $(containerRegistry)
       arguments: '$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
       imageName: $(artifact_id):$(artifact_version)
       pushMultipleImages: false
@@ -83,28 +82,89 @@ jobs:
     displayName: 'Logueado a Container Registry Docker'
     condition: 'succeeded()'
     inputs:
+      containerRegistry: $(containerRegistry)
       command: login
-      containerRegistry: serviceDockerHub
-  - script: |
-      echo Se logueo correctamente
-      echo Listar posición actual
-      ls -s
-      echo Donde nos encontramos
-      pwd
+      
   - task: Docker@2
     displayName: 'Empuje imagen tageada a Docker Registry'
     condition: 'succeeded()'
     inputs:
-      containerRegistry: serviceDockerHub
+      containerRegistry: $(containerRegistry)
       repository: '$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
       command: push
-      #Dockerfile: '**/Dockerfile'
+      #Dockerfile: '$(dockerfilePath)'
       #buildContext: '**'
+      addPipelineData: true
       tags: ''
       arguments: ''
+  
+  - task: Docker@1
+    displayName: 'Correr contenedor'
+    condition: 'succeeded()'
+    inputs:
+      dockerRegistryEndpoint: $(containerRegistry)
+      command: 'Run an image'
+      dockerFile: '$(dockerfilePath)'
+      arguments: '-p 8080:8080 -p 9990:9990 -it $(artifact_id):$(artifact_version) /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0'
+      pushMultipleImages: false
+      tagMultipleImages: false
+      imageName: '$(artifact_id):$(artifact_version)'
+      buildContext: '**'
+      containerName: '$(containerName)'
+      ports: ''
+      runInBackground: true
+      memoryLimit: ''
   - script: |
-      echo Se logueo correctamente
-      echo Listar posición actual
-      ls -s
-      echo Donde nos encontramos
-      pwd
+      echo Listar los contenedores
+      docker ps -a
+      echo Inspeccionando la IP
+      docker inspect -f '{{ .NetworkSettings.IPAddress }}' $(containerName)
+
+  - task: CopyFiles@2
+    displayName: 'Copiar archivos a: $(build.artifactstagingdirectory) desde $(system.defaultworkingdirectory)'
+    condition: 'succeeded()'
+    inputs:
+      SourceFolder: '$(system.defaultworkingdirectory)'
+      Contents: '**/*.war'
+      TargetFolder: '$(build.artifactstagingdirectory)'
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+      preserveTimestamp: false
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publicar Artefacto: $(artifact_id):$(artifact_version)'
+    condition: 'succeeded()'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: '$(ArtifactName)'
+      ArtifactType: 'Container'
+      TargetPath: ''
+      Parallel: false
+      ParallelCount: 8
+      FileCopyOptions: ''
+  
+  - task: Docker@2
+    displayName: 'Saliendo de Docker Hub'
+    condition: 'succeeded()'
+    inputs:
+      containerRegistry: $(containerRegistry)
+      command: logout
+      buildContext: '**'
+      tags: ''
+      arguments: ''
+      addPipelineData: true
+
+  - task: PublishTestResults@2
+    displayName: 'Publicando resultados de la prueba **/TEST-*.xml'
+    condition: 'succeeded()'
+    inputs:
+      testRunner: 'JUnit'
+      testResultsFiles: '**/TEST-*.xml'
+      searchFolder: '$(System.DefaultWorkingDirectory)'
+      mergeTestResults: false
+      failTaskOnFailedTests: false
+      testRunTitle: ''
+      platform: ''
+      configuration: ''
+      publishRunAttachments: true
