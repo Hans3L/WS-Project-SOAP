@@ -80,7 +80,7 @@ jobs:
       containerRegistry: $(containerRegistry)
       command: login
   - script: |
-      docker login -u $(iamapikey) -p $(apiKeyCR)
+      docker login -u $(iamapikey) --password-stdin $(apiKeyCR)
       
   - task: Docker@2
     displayName: 'Empuje imagen tageada a Docker Registry'
