@@ -83,7 +83,7 @@ jobs:
     condition: 'succeeded()'
     inputs:
       containerRegistry: $(containerRegistry)
-      repository: '$(domainCR)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
+      repository: '$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
       command: push
       #Dockerfile: '$(dockerfilePath)'
       #buildContext: '**'
