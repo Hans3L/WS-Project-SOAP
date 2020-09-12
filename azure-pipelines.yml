@@ -51,7 +51,7 @@ jobs:
     displayName: 'Compilar el DockerFile'
     condition: 'succeeded()'
     inputs:
-      containerRegistry: $(containerRegistry)
+      # containerRegistry: $(containerRegistry)
       repository: ''
       command: build
       dockerfile: $(dockerfilePath)
@@ -77,11 +77,11 @@ jobs:
     displayName: 'Logueado a Container Registry Docker'
     condition: 'succeeded()'
     inputs:
-      containerRegistry: $(containerRegistry)
       command: login
+      containerRegistry: $(containerRegistry)
   - script: |
-      echo docker login -u $(iamapikey) --password-stdin $(apiKeyCR)
-      echo Logeo a Bluemix Registry Completo...
+      #docker login -u $(iamapikey) --password-stdin $(apiKeyCR)
+      #echo Logeo a Bluemix Registry Completo...
       
   - task: Docker@2
     displayName: 'Empuje imagen tageada a Docker Registry'
