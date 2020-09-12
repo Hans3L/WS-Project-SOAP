@@ -11,27 +11,16 @@ resources:
 - repo: self
 
 variables:
-  # Conexión del servicio de registro de contenedores establecida durante la creación de la canalización
-  #dockerRegistryServiceConnection: '{{ containerRegistryConnection.Id }}'
-  dockerRegistryServiceConnection: serviceDockerHub
-  #imageRepository: '{{#toAlphaNumericString imageRepository 50}}{{/toAlphaNumericString}}'
-  imagenRepository: 'ws-project'
-  #containerRegistry: '{{ containerRegistryConnection.Authorization.Parameters.loginServer }}'
-  containerRegistry: serviceDockerHub
-  #dockerfilePath: '{{ dockerfilePath }}'
-  dockerfilePath: '**/Dockerfile'
-  #tag: '$(Build.BuildId)'
-  #nameSpaceContainerRegistry: '{{nameSpaceContainerRegistry}}'
-  #artifact_id: '{{artifact_id}}'
-  #artifact_version: '{{artifact_version}}'
-  nameSpaceContainerRegistry: h4ns3l
-  artifact_id: 'ws-project'
-  artifact_version: '1.1'
-  containerName: 'container-ws-project'
-  ArtifactName: 'drop'
-  build.artifactstagingdirectory: '/home/vsts/work/1/a'
-  system.defaultworkingdirectory: '/home/vsts/work/1/s'
-
+##################################################################
+  containerRegistry: '{{ containerRegistryConnection.Id }}'
+  imageRepository: '{{ imageRepository }}'
+  dockerfilePath: '{{ dockerfilePath }}'
+  nameSpaceContainerRegistry: '{{ nameSpaceContainerRegistry }}'
+  artifact_id: '{{ artifact_id }}'
+  artifact_version: '{{ artifact_version }}'
+  containerName: '{{ containerName }}'
+  ArtifactName: '{{ drop }}'
+#################################################################
 jobs:
 
 - job: CreateImageCompilePom
@@ -119,6 +108,7 @@ jobs:
       docker ps -a
       echo Inspeccionando la IP
       docker inspect -f '{{ .NetworkSettings.IPAddress }}' $(containerName)
+      cat /etc/hosts
 
   - task: CopyFiles@2
     displayName: 'Copiar archivos a: $(build.artifactstagingdirectory) desde $(system.defaultworkingdirectory)'
