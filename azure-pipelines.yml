@@ -20,7 +20,7 @@ variables:
   # artifact_version: '{{ artifact_version }}'
   # containerName: '{{ containerName }}'
   # ArtifactName: '{{ drop }}'
-  # domainCRBLUEMIX: '{{ domainCRBLUEMIX }}'
+  # hostCRegistry: '{{ hostCRegistry }}'
   # apiKeyCRBLUEMIX: '{{ apiKeyCRBLUEMIX }}'
   # userBLUEMIX: '{{ userBLUEMIX }}'
   # iamapikey: '{{ iamapikey }}'
@@ -68,7 +68,7 @@ jobs:
     inputs:
       command: Tag image
       dockerRegistryEndpoint: $(containerRegistry)
-      arguments: '$(domainCRBLUEMIX)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
+      arguments: '$(hostCRegistry)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
       imageName: $(artifact_id):$(artifact_version)
       pushMultipleImages: false
       tagMultipleImages: false
@@ -81,9 +81,6 @@ jobs:
     inputs:
       command: login
       containerRegistry: $(containerRegistry)
-  - script: |
-      #docker login -u $(iamapikey) --password-stdin $(apiKeyCR)
-      #echo Logeo a Bluemix Registry Completo...
 
   - task: Bash@3
     displayName: 'Logueando a Container Registry Bluemix'
@@ -98,7 +95,8 @@ jobs:
       noRc: true
   - script: |
       curl -sL https://ibm.biz/idt-installer | bash
-      ibmcloud config --check-version=false  && ibmcloud login -a https://cloud.ibm.com --apikey $(apiKeyCRBLUEMIX)  -r us-south -u $(userBLUEMIX) && ibmcloud cr login && docker push $(domainCRBLUEMIX)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)
+      ibmcloud config --check-version=false  && ibmcloud login -a https://cloud.ibm.com --apikey $(apiKeyCRBLUEMIX)  -r us-south -u $(userBLUEMIX) && ibmcloud cr login
+      #&& docker push $(hostCRegistry)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)
       echo Push to Bluemix
       
   - task: Docker@2
@@ -106,7 +104,7 @@ jobs:
     condition: 'succeeded()'
     inputs:
       containerRegistry: $(containerRegistry)
-      repository: '$(domainCRBLUEMIX)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
+      repository: '$(hostCRegistry)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
       command: push
       addPipelineData: true
       tags: ''
@@ -202,4 +200,3 @@ jobs:
       git checkout $(Build.SourceBranchName)
       git remote add heroku https://heroku:$(apiHEROKU)@git.heroku.com/$(appHEROKU).git
       git push heroku $(Build.SourceBranchName)
-      Write-Host "Desplegado a HEROKU"
