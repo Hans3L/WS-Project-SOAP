@@ -24,8 +24,8 @@ variables:
   # apiKeyCRBLUEMIX: '{{ apiKeyCRBLUEMIX }}'
   # userBLUEMIX: '{{ userBLUEMIX }}'
   # iamapikey: '{{ iamapikey }}'
-  # appHEROKU: '{{ appHEROKU }}'
-  # apiHEROKU: '{{ apiHEROKU }}'
+  # HEROKU_APP_NAME: '{{ HEROKU_APP_NAME }}'
+  # HEROKU_API_KEY: '{{ HEROKU_API_KEY }}'
   tag: ''
 #################################################################
 jobs:
@@ -198,5 +198,6 @@ jobs:
       echo Branch en cola de compilación
       echo $(Build.SourceBranchName)
       git checkout $(Build.SourceBranchName)
-      git remote add heroku https://heroku:$(apiHEROKU)@git.heroku.com/$(appHEROKU).git
-      git push heroku $(Build.SourceBranchName)
+      #git remote add heroku https://heroku:$(HEROKU_API_KEY)@git.heroku.com/$(HEROKU_APP_NAME).git
+      #git push heroku $(Build.SourceBranchName)
+      git push https://heroku:$(HEROKU_API_KEY)@git.heroku.com/$(HEROKU_APP_NAME).git
