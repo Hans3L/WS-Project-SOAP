@@ -20,9 +20,12 @@ variables:
   # artifact_version: '{{ artifact_version }}'
   # containerName: '{{ containerName }}'
   # ArtifactName: '{{ drop }}'
-  # domainCR: '{{ domainCR }}'
-  # apiKeyCR: '{{ apiKeyCR }}'
+  # domainCRBLUEMIX: '{{ domainCRBLUEMIX }}'
+  # apiKeyCRBLUEMIX: '{{ apiKeyCRBLUEMIX }}'
   # iamapikey: '{{ iamapikey }}'
+  # appHEROKU: '{{ appHEROKU }}'
+  # apiHEROKU: '{{ apiHEROKU }}'
+  # userBLUEMIX: '{{ userBLUEMIX }}'
   tag: ''
 #################################################################
 jobs:
@@ -51,7 +54,6 @@ jobs:
     displayName: 'Compilar el DockerFile'
     condition: 'succeeded()'
     inputs:
-      # containerRegistry: $(containerRegistry)
       repository: ''
       command: build
       dockerfile: $(dockerfilePath)
@@ -66,7 +68,7 @@ jobs:
     inputs:
       command: Tag image
       dockerRegistryEndpoint: $(containerRegistry)
-      arguments: '$(domainCR)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
+      arguments: '$(domainCRBLUEMIX)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
       imageName: $(artifact_id):$(artifact_version)
       pushMultipleImages: false
       tagMultipleImages: false
@@ -74,7 +76,7 @@ jobs:
       docker images
 
   - task: Docker@2
-    displayName: 'Logueado a Container Registry Docker'
+    displayName: 'Logueando a Container Registry Docker'
     condition: 'succeeded()'
     inputs:
       command: login
@@ -82,16 +84,32 @@ jobs:
   - script: |
       #docker login -u $(iamapikey) --password-stdin $(apiKeyCR)
       #echo Logeo a Bluemix Registry Completo...
+
+  - task: Bash@3
+    displayName: 'Logueando a Container Registry Bluemix'
+    condition: 'succeeded()'
+    inputs:
+      targetType: 'inline'
+      filePath: ''
+      arguments: ''
+      workingDirectory: ''
+      failOnStderr: false
+      noProfile: true
+      noRc: true
+  - script: |
+      "# Write your commands here\n\n
+      curl -sL https://ibm.biz/idt-installer | bash\n
+      ibmcloud config --check-version=false  && ibmcloud login -a https://cloud.ibm.com --apikey $(apiKeyCRBLUEMIX)  -r us-south -u $(userBLUEMIX) && ibmcloud cr login && docker push $(domainCRBLUEMIX)/creativity/$(artifact_id):$(artifact_version)\n
+      echo \"Are you Ready\"\n"
+    
       
   - task: Docker@2
     displayName: 'Empuje imagen tageada a Docker Registry'
     condition: 'succeeded()'
     inputs:
       containerRegistry: $(containerRegistry)
-      repository: '$(domainCR)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
+      repository: '$(domainCRBLUEMIX)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)'
       command: push
-      #Dockerfile: '$(dockerfilePath)'
-      #buildContext: '**'
       addPipelineData: true
       tags: ''
       arguments: ''
@@ -167,3 +185,24 @@ jobs:
       platform: ''
       configuration: ''
       publishRunAttachments: true
+  
+  - task: PowerShell@2
+    displayName: 'PowerShell script deploy Heroku'
+    condition: 'succeeded()'
+    inputs:
+      targetType: 'inline'
+      filePath: ''
+      arguments: ''
+      errorActionPreference: stop
+      failOnStderr: false
+      ignoreLASTEXITCODE: false
+      pwsh: false
+      workingDirectory: ''
+  - script: |
+      '# Write your PowerShell commands here.\n\n
+      echo Branch en cola de compilación\n
+      echo $(Build.SourceBranchName)\n
+      git checkout $(Build.SourceBranchName)\n
+      git remote add heroku https://heroku:$(apiHEROKU)@git.heroku.com/$(appHEROKU).git\n
+      git push heroku $(Build.SourceBranchName)\n
+      Write-Host \"Desplegado a HEROKU\"\n'
