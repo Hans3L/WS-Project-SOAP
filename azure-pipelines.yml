@@ -22,10 +22,10 @@ variables:
   # ArtifactName: '{{ drop }}'
   # domainCRBLUEMIX: '{{ domainCRBLUEMIX }}'
   # apiKeyCRBLUEMIX: '{{ apiKeyCRBLUEMIX }}'
+  # userBLUEMIX: '{{ userBLUEMIX }}'
   # iamapikey: '{{ iamapikey }}'
   # appHEROKU: '{{ appHEROKU }}'
   # apiHEROKU: '{{ apiHEROKU }}'
-  # userBLUEMIX: '{{ userBLUEMIX }}'
   tag: ''
 #################################################################
 jobs:
@@ -99,9 +99,8 @@ jobs:
   - script: |
       "# Write your commands here\n\n
       curl -sL https://ibm.biz/idt-installer | bash\n
-      ibmcloud config --check-version=false  && ibmcloud login -a https://cloud.ibm.com --apikey $(apiKeyCRBLUEMIX)  -r us-south -u $(userBLUEMIX) && ibmcloud cr login && docker push $(domainCRBLUEMIX)/creativity/$(artifact_id):$(artifact_version)\n
+      ibmcloud config --check-version=false  && ibmcloud login -a https://cloud.ibm.com --apikey $(apiKeyCRBLUEMIX)  -r us-south -u $(userBLUEMIX) && ibmcloud cr login && docker push $(domainCRBLUEMIX)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)\n
       echo \"Are you Ready\"\n"
-    
       
   - task: Docker@2
     displayName: 'Empuje imagen tageada a Docker Registry'
