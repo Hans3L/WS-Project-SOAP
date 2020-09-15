@@ -97,10 +97,9 @@ jobs:
       noProfile: true
       noRc: true
   - script: |
-      "# Write your commands here\n\n
-      curl -sL https://ibm.biz/idt-installer | bash\n
-      ibmcloud config --check-version=false  && ibmcloud login -a https://cloud.ibm.com --apikey $(apiKeyCRBLUEMIX)  -r us-south -u $(userBLUEMIX) && ibmcloud cr login && docker push $(domainCRBLUEMIX)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)\n
-      echo \"Are you Ready\"\n"
+      curl -sL https://ibm.biz/idt-installer | bash
+      ibmcloud config --check-version=false  && ibmcloud login -a https://cloud.ibm.com --apikey $(apiKeyCRBLUEMIX)  -r us-south -u $(userBLUEMIX) && ibmcloud cr login && docker push $(domainCRBLUEMIX)/$(nameSpaceContainerRegistry)/$(artifact_id):$(artifact_version)
+      echo Push to Bluemix
       
   - task: Docker@2
     displayName: 'Empuje imagen tageada a Docker Registry'
@@ -198,10 +197,9 @@ jobs:
       pwsh: false
       workingDirectory: ''
   - script: |
-      '# Write your PowerShell commands here.\n\n
-      echo Branch en cola de compilación\n
-      echo $(Build.SourceBranchName)\n
-      git checkout $(Build.SourceBranchName)\n
-      git remote add heroku https://heroku:$(apiHEROKU)@git.heroku.com/$(appHEROKU).git\n
-      git push heroku $(Build.SourceBranchName)\n
-      Write-Host \"Desplegado a HEROKU\"\n'
+      echo Branch en cola de compilación
+      echo $(Build.SourceBranchName)
+      git checkout $(Build.SourceBranchName)
+      git remote add heroku https://heroku:$(apiHEROKU)@git.heroku.com/$(appHEROKU).git
+      git push heroku $(Build.SourceBranchName)
+      Write-Host "Desplegado a HEROKU"
